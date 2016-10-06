@@ -1,0 +1,87 @@
+function parseMolecule(formula) {
+  var resultObject = {};
+  var specialSymbols = {
+  '{' : '}',
+  '(': ')',
+  '[': ']'};
+   currentMultiplier(formula, 1, resultObject, specialSymbols);
+   return resultObject;
+  }
+function currentMultiplier(currentString, multiplier, resultObject, specialSymbols){
+    var isSubstringStarted = false;
+    var specialSymbol;
+    var specialSymbolIndex;
+    var startIndex;
+    for(var i=0;i< currentString.length; i++){
+      if(!isSubstringStarted){
+        if(currentString.charAt(i) == '[' || currentString.charAt(i) == '(' ||
+        currentString.charAt(i) == '{'){
+          startIndex = i;
+          var specialSymbol = currentString.charAt(i);
+          specialSymbolIndex =0;
+          isSubstringStarted = true;
+          }
+      }
+      else{
+        if(currentString.charAt(i) == specialSymbol){
+          specialSymbolIndex++;
+        }
+        else if(currentString.charAt(i) == specialSymbols[specialSymbol] ){
+          if(specialSymbolIndex !=0){ 
+          specialSymbolIndex --;
+          }
+          else{
+            var stringNumber = '';
+            var subString = currentString.substring(i+1);
+            for(var j =0; j< subString.length;j++){
+              if(isNaN(subString.charAt(j))){
+              break;
+              }
+              else{
+              stringNumber += subString.charAt(j);
+              }
+            }
+            currentMultiplier(currentString.substring(startIndex+1, i), multiplier * Number(stringNumber), resultObject, specialSymbols);
+            currentString = currentString.substring(0,startIndex) + currentString.substring(i+1+stringNumber.length);
+            isSubstringStarted = false;
+          }
+        }
+      }
+      }
+      // no special symbols in currentString
+      if(currentString == '') return;
+      var currentElement = currentString.charAt(0);
+      var currentLocalMultiplier = '';
+        
+        for( var i=1; i< currentString.length; i++){
+          var currentChar = currentString.charAt(i);
+          if(!isNaN(currentChar)){
+          currentLocalMultiplier +=currentChar;
+          }
+          else if(currentChar !== currentChar.toUpperCase()){
+            currentElement += currentChar;
+          }
+          else{
+            if(!currentLocalMultiplier){
+              currentLocalMultiplier = '1';
+            }
+            if(!resultObject[currentElement]){
+              resultObject[currentElement] = multiplier * Number(currentLocalMultiplier);
+            }
+            else{
+              resultObject[currentElement] +=multiplier * Number(currentLocalMultiplier);
+            }
+            currentElement = currentChar;
+            currentLocalMultiplier = '';
+          }
+        }
+        if(!currentLocalMultiplier){
+        currentLocalMultiplier = '1';
+        }
+        if(!resultObject[currentElement]){
+          resultObject[currentElement] = multiplier * Number(currentLocalMultiplier);
+        }
+        else{
+          resultObject[currentElement] +=multiplier * Number(currentLocalMultiplier);
+        } 
+}
