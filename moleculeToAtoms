@@ -44,7 +44,7 @@ function currentMultiplier(currentString, multiplier, resultObject, specialSymbo
             currentMultiplier(currentString.substring(startIndex+1, i), multiplier * Number(stringNumber) || multiplier, resultObject, specialSymbols);
             currentString = currentString.substring(0,startIndex) + currentString.substring(i+1+stringNumber.length);
             isSubstringStarted = false;
-            i = 0;
+            i = -1;
           }
         }
       }
